@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  ftp_target:
+    build:
+      context: ../../containers/vsftpd
+      dockerfile: Dockerfile
+    container_name: ftp_target
+    ports:
+      - "20:20"
+      - "21:21"
+      - "30030-30035:30030-30035"
+    networks:
+      - ftp_network
+
+  ftp_attacker:
+    build:
+      context: ../../containers/patator
+      dockerfile: Dockerfile
+    container_name: ftp_attacker
+    depends_on:
+      - ftp_target
+    networks:
+      - ftp_network
+    command: ["ftp_login", "host=ftp_target", "user=iscxtap", "password=FILE0", "0=passwords.txt", "--rate-limit=0", "--threads=5"]
+
+networks:
+  ftp_network:
+    driver: bridge
