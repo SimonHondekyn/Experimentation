@@ -12,5 +12,7 @@ RUN apt-get update && apt-get install -y /tmp/* \
 COPY config/setup.sh /var/tmp/setup.sh
 # change permissions and run basic configuration script
 RUN chmod +x /var/tmp/setup.sh && /var/tmp/setup.sh
+# expose port(s)
+EXPOSE 22
 # run sshd (add -e option to see logs)
 CMD ["/usr/sbin/sshd", "-D", "-e"]
