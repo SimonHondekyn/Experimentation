@@ -87,13 +87,14 @@ def init_socket(ip):
 
     s.connect((ip, args.port))
 
-    s.send("GET / HTTP/1.1\r\n".encode("utf-8"))
-    s.send("Host: {}\r\n".format(ip).encode("utf-8"))
-    if args.randuseragent:
-        s.send("User-Agent: {}\r\n".format(random.choice(user_agents)).encode("utf-8"))
-    else:
-        s.send("User-Agent: {}\r\n".format(user_agents[0]).encode("utf-8"))
-    s.send("{}\r\n".format("Content-Length: 42").encode("utf-8"))
+    request = (
+        "GET / HTTP/1.1\r\n"
+        + "Host: {}\r\n".format(ip)
+        + ("User-Agent: {}\r\n".format(random.choice(user_agents)) if args.randuseragent else "User-Agent: {}\r\n".format(user_agents[0]))
+        + "Content-Length: 42\r\n"
+    )
+
+    s.send(request.encode("utf-8"))
     return s
 
 def main():
