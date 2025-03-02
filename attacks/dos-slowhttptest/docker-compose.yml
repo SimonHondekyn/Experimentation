@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  dos_target:
+    build:
+      context: ../../containers/apache
+      dockerfile: Dockerfile
+    container_name: dos_target
+    ports:
+      - "80:80"
+      - "3306:3306"
+    networks:
+      - dos_network
+
+  # dos_attacker:
+  #   build:
+  #     context: ../../containers/slowhttptest
+  #     dockerfile: Dockerfile
+  #   container_name: dos_attacker
+  #   depends_on:
+  #     - dos_target
+  #   networks:
+  #     - dos_network
+  #   command: ["dos_target"]
+
+networks:
+  dos_network:
+    driver: bridge

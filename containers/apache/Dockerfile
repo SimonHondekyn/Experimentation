@@ -1,14 +1,20 @@
 # use ubuntu 16.04
 FROM ubuntu:16.04
+# Set DEBIAN_FRONTEND to noninteractive to prevent prompts during installation
+ENV DEBIAN_FRONTEND=noninteractive
 # install apache2
 RUN apt-get update && apt-get install -y \
-    apache2 \
+    apache2 git mysql-server php php-mysqli php-gd libapache2-mod-php \
     && rm -rf /var/lib/apt/lists/*
-# copy basic configuration script
+# install DVWA v1.10 *Development*
+RUN git clone --depth 1 --branch 2.0 https://github.com/digininja/DVWA.git /var/www/html/dv
+# copy DVWA and MySQL config, and basic setup
+COPY config/config.inc.php /var/www/html/dv/config/
+COPY config/mysql_init.sql /var/www/
 COPY config/setup.sh /var/tmp/setup.sh
 # change permissions and run basic configuration script
 RUN chmod +x /var/tmp/setup.sh && /var/tmp/setup.sh
 # expose port(s)
 EXPOSE 80
-# run apache2
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+# run mysql and apache2
+CMD /bin/bash -c "service mysql start && apache2ctl -D FOREGROUND"
