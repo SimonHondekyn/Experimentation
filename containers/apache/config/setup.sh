@@ -8,6 +8,7 @@ chmod -R 755 /var/www/html/dv
 
 service mysql start
 sleep 5
+
 mysql -u root <<EOF
 USE mysql;
 UPDATE user SET plugin='mysql_native_password' WHERE user='root';
