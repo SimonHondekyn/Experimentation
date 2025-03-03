@@ -20,7 +20,7 @@ services:
       - dos_target
     networks:
       - dos_network
-    command: ["dos_target"]
+    command: ["http://dos_target"]
 
 networks:
   dos_network:

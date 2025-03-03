@@ -18,4 +18,5 @@ RUN git clone https://github.com/jseidl/GoldenEye.git /opt/goldeneye && \
 # set workdir
 WORKDIR /opt/goldeneye
 # set entrypoint
-ENTRYPOINT ["python3", "goldeneye.py"]
+# note: python3 doesn't work for this version of goldeneye
+ENTRYPOINT ["python", "goldeneye.py"]
