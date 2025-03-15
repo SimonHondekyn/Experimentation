@@ -3,7 +3,7 @@ version: '3'
 services:
   dos_target:
     build:
-      context: ../../containers/apache
+      context: ../../containers/dvwa
       dockerfile: Dockerfile
     container_name: dos_target
     ports:

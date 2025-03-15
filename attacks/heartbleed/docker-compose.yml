@@ -20,7 +20,7 @@ services:
       - target
     networks:
       - network
-    command: ["target"]
+    command: ["--scan", "target:444"]
 
 networks:
   network:

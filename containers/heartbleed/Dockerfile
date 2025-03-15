@@ -1,31 +1,36 @@
 # use ubuntu 12.04
 FROM ubuntu:12.04
-# set env
-ENV DEBIAN_FRONTEND=noninteractive
 # update sources.list
 RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
     sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
-# install requirements for building openssl version 1.0.1f
+# install openssl and apache2 dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential zlib1g-dev apache2 ssl-cert \
+    git build-essential zlib1g-dev libssl-dev \
     && rm -rf /var/lib/apt/lists/*
-# copy package to container
-COPY src/openssl_1.0.1f.orig.tar.gz /usr/local/src/
-# set workdir
-WORKDIR /usr/local/src
-# extract, build, install
-RUN tar -xvzf openssl_1.0.1f.orig.tar.gz && \
-    cd openssl-1.0.1f && \
-    ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl shared zlib && \
+# clone, build and install openssl 1.0.1f
+RUN git clone -b ubuntu/utopic-devel https://git.launchpad.net/ubuntu/+source/openssl && \
+    cd openssl && \
+    ./config no-shared --prefix=/usr/local/ssl --openssldir=/usr/local/ssl && \
+    make && make install_sw
+# remove pre-installed version of openssl and link vulnerable version
+RUN rm -f /usr/bin/openssl
+RUN ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
+# clone apache2 to build from source
+RUN git clone -b ubuntu/precise https://git.launchpad.net/ubuntu/+source/apache2 && \
+    cd apache2 && \
+    ./configure --enable-ssl --with-ssl=/usr/local/ssl && \
     make && make install
-# first move openssl that comes with apache, then create symlink
-RUN mv /usr/bin/openssl /usr/bin/openssl.bak && \
-    ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
-# enable ssl module
-RUN a2enmod ssl
-# copy apache configuration to container
-COPY config/000-default.conf /etc/apache2/sites-available/000-default.conf
-# port 444 is used instead of port 443
+# create certificate
+RUN openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 \
+    -keyout /usr/local/apache2/conf/server.key \
+    -out /usr/local/apache2/conf/server.crt \
+    -subj "/C=US/ST=State/L=City/O=Company/OU=Department/CN=localhost"
+# include ssl configuration
+RUN sed -i 's/^#Include conf\/extra\/httpd-ssl.conf/Include conf\/extra\/httpd-ssl.conf/' /usr/local/apache2/conf/httpd.conf
+# listen on port 444 instead of 443
+RUN sed -i 's/^Listen 443/Listen 444/' /usr/local/apache2/conf/extra/httpd-ssl.conf
+RUN sed -i 's/^<VirtualHost _default_:443>/<VirtualHost _default_:444>/' /usr/local/apache2/conf/extra/httpd-ssl.conf
+# expose port 444
 EXPOSE 444
-# run apache2
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+# run the server in the foreground
+CMD ["/usr/local/apache2/bin/apachectl", "-D", "FOREGROUND"]
