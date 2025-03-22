@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   ssh_target:
     build:

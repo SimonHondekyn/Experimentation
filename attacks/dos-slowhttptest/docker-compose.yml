@@ -1,9 +1,7 @@
-version: '3'
-
 services:
   dos_target:
     build:
-      context: ../../containers/dvwa
+      context: ../../containers/dvwa-impossible
       dockerfile: Dockerfile
     container_name: dos_target
     ports:

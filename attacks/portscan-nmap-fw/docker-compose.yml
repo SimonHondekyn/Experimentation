@@ -1,0 +1,27 @@
+services:
+  target:
+    build:
+      context: ../../containers/apache-vsftpd-opensh
+      dockerfile: Dockerfile
+    container_name: target
+    ports:
+      - "20:20"
+      - "21:21"
+      - "22:22"
+      - "80:80"
+      - "30030-30035:30030-30035"
+    networks:
+      - network
+
+  attacker:
+    image: instrumentisto/nmap
+    container_name: attacker
+    depends_on:
+      - target
+    networks:
+      - network
+    command: target -p 21,22,80,443,444 -Pn
+
+networks:
+  network:
+    driver: bridge

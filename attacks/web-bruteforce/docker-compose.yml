@@ -1,0 +1,26 @@
+services:
+  web_target:
+    build:
+      context: ../../containers/dvwa-low-login
+      dockerfile: Dockerfile
+    container_name: web_target
+    ports:
+      - "80:80"
+      - "3306:3306"
+    networks:
+      - web_network
+
+  web_attacker:
+    build:
+      context: ../../containers/web
+      dockerfile: Dockerfile
+    container_name: web_attacker
+    depends_on:
+      - web_target
+    networks:
+      - web_network
+    command: ["/bin/sh", "-c", "sleep 10 && python3 bruteforce.py http://web_target"]
+
+networks:
+  web_network:
+    driver: bridge
