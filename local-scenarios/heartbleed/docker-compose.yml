@@ -1,0 +1,25 @@
+services:
+  target:
+    build:
+      context: ../../containers/heartbleed
+      dockerfile: Dockerfile
+    container_name: target
+    ports:
+      - "444:444"
+    networks:
+      - network
+
+  attacker:
+    build:
+      context: ../../containers/heartleech
+      dockerfile: Dockerfile
+    container_name: attacker
+    depends_on:
+      - target
+    networks:
+      - network
+    command: "target:444 --autopwn"
+
+networks:
+  network:
+    driver: bridge

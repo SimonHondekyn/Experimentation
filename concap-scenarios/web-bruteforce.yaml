@@ -1,0 +1,17 @@
+attacker:
+  name: bruteforce
+  image: ghcr.io/simonhondekyn/web:cic
+  atkCommand: python3 bruteforce.py http://$TARGET_IP
+target:
+  name: dvwa-low-login
+  image: ghcr.io/simonhondekyn/dvwa-low-login:cic
+  startupProbe:
+    httpGet:
+      path: /
+      port: 80
+    initialDelaySeconds: 5
+    periodSeconds: 5
+labels:
+  label: 1
+  category: "web"
+  subcategory: "bruteforce"

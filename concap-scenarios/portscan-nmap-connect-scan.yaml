@@ -1,0 +1,16 @@
+attacker:
+  name: nmap
+  image: ghcr.io/simonhondekyn/nmap:cic
+  atkCommand: scans/connect-scan.sh $TARGET_IP
+target:
+  name: nmap-target
+  image: ghcr.io/simonhondekyn/nmap-target:cic
+  startupProbe:
+    tcpSocket:
+      port: 21
+    initialDelaySeconds: 15
+    periodSeconds: 5
+labels:
+  label: 1
+  category: "portscan"
+  subcategory: "nmap-connect-scan"

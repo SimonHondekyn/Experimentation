@@ -12,9 +12,13 @@ RUN echo "deb http://old.kali.org/kali moto main non-free contrib" > /etc/apt/so
 RUN apt-get update && apt-get install -y \
     git build-essential \
     && rm -rf /var/lib/apt/lists/*
-# clone, build and install openssl 1.0.1f
-RUN git clone -b ubuntu/utopic-devel https://git.launchpad.net/ubuntu/+source/openssl /tmp/openssl && \
-    cd /tmp/openssl && \
+# copy openssl 1.0.1f source
+COPY src/openssl-1.0.1f.tar.gz /usr/local/src/
+# change dir
+WORKDIR /usr/local/src
+# build and install openssl 1.0.1f
+RUN tar -xvzf openssl-1.0.1f.tar.gz && \
+    cd openssl-1.0.1f && \
     ./config no-shared --prefix=/usr/local/ssl --openssldir=/usr/local/ssl && \
     make && make install_sw
 # remove pre-installed version of openssl and link vulnerable version

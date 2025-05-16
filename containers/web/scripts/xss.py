@@ -61,7 +61,7 @@ def test_xss(base_url):
         "Connection": "keep-alive",
         "Cookie": f"security={security_level}; security={security_level}; PHPSESSID={php_sessid}"
     })
-    for i in range(5):
+    for i in range(888):
         if i > 0:
             benign_response = send_benign_request(session, base_url)
             if benign_response:

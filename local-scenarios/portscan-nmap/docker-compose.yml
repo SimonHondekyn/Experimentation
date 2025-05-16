@@ -1,0 +1,36 @@
+services:
+  target:
+    build:
+      context: ../../containers/nmap-target
+      dockerfile: Dockerfile
+    container_name: target
+    ports:
+      - "20:20"
+      - "21:21"
+      - "22:22"
+      - "80:80"
+      - "30030-30050:30030-30050"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "service vsftpd status || exit 1"]
+      interval: 5s
+      retries: 3
+      start_period: 5s
+      timeout: 3s
+    networks:
+      - network
+
+  attacker:
+    build:
+      context: ../../containers/nmap
+      dockerfile: Dockerfile
+    container_name: attacker
+    depends_on:
+      target:
+        condition: service_healthy
+    networks:
+      - network
+    command: scans/syn-scan.sh target
+
+networks:
+  network:
+    driver: bridge

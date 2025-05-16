@@ -15,7 +15,7 @@ RUN git clone --depth 1 --branch 2.1 https://github.com/digininja/DVWA.git /var/
 COPY config/config.inc.php /var/www/html/dv/config/
 COPY config/mysql_init.sql /var/www/
 COPY config/setup.sh /var/tmp/setup.sh
-# change permissions and run basic configuration script
+# change permissions
 RUN chmod +x /var/tmp/setup.sh
 # expose port(s)
 EXPOSE 80 3306

@@ -1,0 +1,17 @@
+attacker:
+  name: nmap
+  image: ghcr.io/simonhondekyn/nmap:cic
+  atkCommand: nmap $TARGET_IP -sU -Pn
+  atkTime: 81s
+target:
+  name: nmap-target
+  image: ghcr.io/simonhondekyn/nmap-target:cic
+  startupProbe:
+    tcpSocket:
+      port: 21
+    initialDelaySeconds: 15
+    periodSeconds: 5
+labels:
+  label: 1
+  category: "portscan"
+  subcategory: "nmap-udp-scan"

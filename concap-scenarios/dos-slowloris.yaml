@@ -1,0 +1,18 @@
+attacker:
+  name: slowloris
+  image: ghcr.io/simonhondekyn/slowloris:cic
+  atkCommand: python3 slowloris.py $TARGET_IP -s 400
+  atkTime: 1278s
+target:
+  name: apache
+  image: ghcr.io/simonhondekyn/apache:cic
+  startupProbe:
+    httpGet:
+      path: /
+      port: 80
+    initialDelaySeconds: 5
+    periodSeconds: 5
+labels:
+  label: 1
+  category: "denial-of-service"
+  subcategory: "slowloris"

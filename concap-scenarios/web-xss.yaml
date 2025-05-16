@@ -1,0 +1,17 @@
+attacker:
+  name: xss
+  image: ghcr.io/simonhondekyn/web:cic
+  atkCommand: python3 xss.py http://$TARGET_IP
+target:
+  name: dvwa-low
+  image: ghcr.io/simonhondekyn/dvwa-low:cic
+  startupProbe:
+    httpGet:
+      path: /
+      port: 80
+    initialDelaySeconds: 5
+    periodSeconds: 5
+labels:
+  label: 1
+  category: "web"
+  subcategory: "reflected-xss"

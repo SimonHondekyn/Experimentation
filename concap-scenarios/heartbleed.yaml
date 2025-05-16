@@ -1,0 +1,28 @@
+attacker:
+  name: heartleech
+  image: ghcr.io/simonhondekyn/heartleech:cic
+  atkCommand: /opt/heartleech/heartleech $TARGET_IP:444 --autopwn
+  atkTime: 1227s
+target:
+  name: heartbleed
+  image: ghcr.io/simonhondekyn/heartbleed:cic
+  startupProbe:
+    tcpSocket:
+      port: 444
+    initialDelaySeconds: 5
+    periodSeconds: 5
+network:
+  bandwidth: 530kbit
+  queueSize: 200ms
+  limit: 15000
+  delay: 10ms 
+  jitter: 0ms
+  distribution: normal
+  loss: 0%
+  corrupt: 0%
+  duplicate: 0%
+  seed: 0
+labels:
+  label: 1
+  category: "data-leakage"
+  subcategory: "heartbleed"

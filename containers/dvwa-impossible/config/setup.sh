@@ -3,7 +3,7 @@
 set -e
 
 echo "ListenBacklog 128" >> /etc/apache2/apache2.conf
-sed -i 's/^\(\s*\)MaxRequestWorkers\s*[0-9]\+/\1MaxRequestWorkers 100/' /etc/apache2/mods-available/mpm_prefork.conf
+sed -i 's/^\(\s*\)MaxRequestWorkers\s*[0-9]\+/\1MaxRequestWorkers 150/' /etc/apache2/mods-available/mpm_prefork.conf
 
 chown -R www-data:www-data /var/www/html/dv
 chmod -R 755 /var/www/html/dv

