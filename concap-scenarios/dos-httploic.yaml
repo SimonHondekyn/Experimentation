@@ -1,0 +1,17 @@
+attacker:
+  name: httploic
+  image: ghcr.io/simonhondekyn/web:cic
+  atkCommand: python3 httploic.py $TARGET_IP
+target:
+  name: apache
+  image: ghcr.io/simonhondekyn/apache:cic
+  startupProbe:
+    httpGet:
+      path: /
+      port: 80
+    initialDelaySeconds: 5
+    periodSeconds: 5
+labels:
+  label: 1
+  category: "denial-of-service"
+  subcategory: "httploic"
